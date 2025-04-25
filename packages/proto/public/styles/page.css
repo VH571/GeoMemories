@@ -1,0 +1,32 @@
+body {
+    margin: 0;
+    background-color: var(--color-background-page);
+    color: var(--color-text-default);
+    font-family: var(--font-family-base);
+    padding: 1rem;
+
+}
+
+header {
+    background-color: var(--color-background-header);
+    color: var(--color-text-header);
+    padding: 1rem;
+    border-bottom: var(--border-default);
+    display: flex;
+    justify-content: center;
+}
+
+footer {
+    margin-top: 2rem;
+    border-top: var(--border-default);
+    padding-top: 1rem;
+}
+
+a {
+    color: var(--color-link);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
