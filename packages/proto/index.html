@@ -12,33 +12,40 @@
     <link rel="stylesheet" href="/styles/reset.css" />
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
-  </head>
-  <script type="module">
-    const toggleLabel = document.getElementById("dark-mode-toggle");
+    <script type="module">
+      const toggleLabel = document.getElementById("dark-mode-toggle");
 
-    toggleLabel.onchange = (event) => {
-      event.stopPropagation();
+      toggleLabel.onchange = (event) => {
+        event.stopPropagation();
 
-      const isChecked = event.target.checked;
+        const isChecked = event.target.checked;
 
-      const customEvent = new CustomEvent("darkmode:toggle", {
-        bubbles: true,
-        detail: { enabled: isChecked },
+        const customEvent = new CustomEvent("darkmode:toggle", {
+          bubbles: true,
+          detail: { enabled: isChecked },
+        });
+
+        toggleLabel.dispatchEvent(customEvent);
+      };
+
+      document.body.addEventListener("darkmode:toggle", (event) => {
+        const enabled = event.detail.enabled;
+
+        if (enabled) {
+          document.body.classList.add("dark-mode");
+        } else {
+          document.body.classList.remove("dark-mode");
+        }
       });
+    </script>
+    <script type="module">
+      import { define } from "@calpoly/mustang";
+      import { GeoMemoryElement } from "/src/memory.js";
 
-      toggleLabel.dispatchEvent(customEvent);
-    };
+      define({ "geo-memory": GeoMemoryElement });
+    </script>
+  </head>
 
-    document.body.addEventListener("darkmode:toggle", (event) => {
-      const enabled = event.detail.enabled;
-
-      if (enabled) {
-        document.body.classList.add("dark-mode");
-      } else {
-        document.body.classList.remove("dark-mode");
-      }
-    });
-  </script>
   <body>
     <header>
       <div class="site-title"><h1>Geo-Memories</h1></div>
@@ -60,7 +67,9 @@
 
     <h2>Explore Concepts</h2>
     <ul>
-      <li><a href="memory1.html">Memory: Sunset at Glacier Point</a></li>
+      <geo-memory href="memory1.html">
+        <span slot="title">Sunset at Glacier Point</span>
+      </geo-memory>
       <li>
         <a href="location-yosemite.html">Location: Yosemite National Park</a>
       </li>
