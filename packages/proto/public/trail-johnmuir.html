@@ -13,6 +13,32 @@
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
   </head>
+  <script type="module">
+    const toggleLabel = document.getElementById("dark-mode-toggle");
+
+    toggleLabel.onchange = (event) => {
+      event.stopPropagation();
+
+      const isChecked = event.target.checked;
+
+      const customEvent = new CustomEvent("darkmode:toggle", {
+        bubbles: true,
+        detail: { enabled: isChecked },
+      });
+
+      toggleLabel.dispatchEvent(customEvent);
+    };
+
+    document.body.addEventListener("darkmode:toggle", (event) => {
+      const enabled = event.detail.enabled;
+
+      if (enabled) {
+        document.body.classList.add("dark-mode");
+      } else {
+        document.body.classList.remove("dark-mode");
+      }
+    });
+  </script>
   <body>
     <header>
       <h1>
@@ -21,10 +47,16 @@
           <use href="/icons/trail.svg#icon-hike2" />
         </svg>
       </h1>
-      <nav>
-        <a href="index.html"><h2>Home</h2></a>
-        <a href="location-yosemite.html"><h2>Locations</h2></a>
-      </nav>
+      <div class="nav-contatiner">
+        <nav>
+          <a href="index.html"><h2>Home</h2></a>
+          <a href="location-yosemite.html"><h2>Locations</h2></a>
+        </nav>
+        <label id="dark-mode-toggle">
+          <input type="checkbox" autocomplete="off" />
+          Dark mode
+        </label>
+      </div>
     </header>
     <p>Trail through Yosemite and the High Sierras.</p>
     <ul>
