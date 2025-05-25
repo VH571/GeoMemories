@@ -2,12 +2,23 @@ import express, { Request, Response } from "express";
 import { connect } from "./services/mongo";
 import Trails from "./services/trail-svc";
 import Posts from "./services/post-svc";
+import posts from "./routes/posts";
+import trails from "./routes/trails";
 
 
 connect("geomemories");
 
 const app = express();
 const port = process.env.PORT || 3000;
+const staticDir = process.env.STATIC || "public";
+
+app.use(express.static(staticDir));
+
+app.use(express.json());
+
+app.use("/api/trails", trails);
+app.use("/api/posts", posts);
+
 app.get("/trails", async (req: Request, res: Response) => {
   const data = await Trails.index();
   res.json(data);
