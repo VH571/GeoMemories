@@ -18,7 +18,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://vherre13.csse.dev"
+      "http://localhost:3000"
     ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
