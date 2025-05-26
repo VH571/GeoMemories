@@ -4,7 +4,8 @@ import Trails from "./services/trail-svc";
 import Posts from "./services/post-svc";
 import posts from "./routes/posts";
 import trails from "./routes/trails";
-
+import auth, { authenticateUser } from "./routes/auth";
+import cors from "cors";
 
 connect("geomemories");
 
@@ -16,8 +17,16 @@ app.use(express.static(staticDir));
 
 app.use(express.json());
 
-app.use("/api/trails", trails);
-app.use("/api/posts", posts);
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+  })
+);
+app.use("/auth", auth);
+app.use("/api/posts", authenticateUser, posts);
+app.use("/api/trails", authenticateUser, trails);
 
 app.get("/trails", async (req: Request, res: Response) => {
   const data = await Trails.index();
@@ -47,10 +56,6 @@ app.get("/post/:id", async (req: Request, res: Response) => {
   }
 });
 
-
-app.get("/hello", (req: Request, res: Response) => {
-  res.send("Hello, World");
-});
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

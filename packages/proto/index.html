@@ -2,86 +2,58 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Geo-Memories Index</title>
+    <title>Geo-Memories</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Livvic:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,900&family=Rammetto+One&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Livvic&family=Rammetto+One&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/styles/reset.css" />
     <link rel="stylesheet" href="/styles/tokens.css" />
     <link rel="stylesheet" href="/styles/page.css" />
+
     <script type="module">
-      const toggleLabel = document.getElementById("dark-mode-toggle");
-
-      toggleLabel.onchange = (event) => {
-        event.stopPropagation();
-
-        const isChecked = event.target.checked;
-
-        const customEvent = new CustomEvent("darkmode:toggle", {
-          bubbles: true,
-          detail: { enabled: isChecked },
-        });
-
-        toggleLabel.dispatchEvent(customEvent);
-      };
-
-      document.body.addEventListener("darkmode:toggle", (event) => {
-        const enabled = event.detail.enabled;
-
-        if (enabled) {
-          document.body.classList.add("dark-mode");
-        } else {
-          document.body.classList.remove("dark-mode");
-        }
-      });
-    </script>
-    <script type="module">
-      import { define } from "@calpoly/mustang";
+      import { define, Auth } from "@calpoly/mustang";
       import { GeoMemoryElement } from "/src/memory.js";
       import { GeoMemoriesList } from "/src/geo-memories-list.js";
+      import { HeaderElement } from "/src/components/site-header.ts";
 
       define({
         "geo-memory": GeoMemoryElement,
         "geo-memories-list": GeoMemoriesList,
+        "mu-auth": Auth.Provider,
+        "site-header": HeaderElement
       });
+
+      HeaderElement.initializeOnce?.();
     </script>
   </head>
 
   <body>
-    <header>
-      <div class="site-title"><h1>Geo-Memories</h1></div>
-      <div class="nav-contatiner">
-        <nav>
-          <a href="index.html"><h2>Home</h2></a>
-          <a href="location-yosemite.html"><h2>Locations</h2></a>
-        </nav>
-        <label id="dark-mode-toggle">
-          <input type="checkbox" autocomplete="off" />
-          Dark mode
-        </label>
-      </div>
-    </header>
-    <p>
-      This app lets you explore memories dropped by others while hiking or
-      traveling.
-    </p>
+    <mu-auth provides="geo:auth">
+      <site-header></site-header>
 
-    <h2>Explore Concepts</h2>
-    <ul>
-      <geo-memories-list src="/data/memories.json"></geo-memories-list>
-      <li>
-        <a href="location-yosemite.html">Location: Yosemite National Park</a>
-      </li>
-      <li><a href="trail-johnmuir.html">Trail: John Muir Trail</a></li>
-      <li><a href="message1.html">Message: "This view made my day!"</a></li>
-      <li><a href="picture1.html">Picture: Sunrise over Half Dome</a></li>
-    </ul>
+      <main class="page">
+        <p>
+          This app lets you explore memories dropped by others while hiking or
+          traveling.
+        </p>
 
-    <footer>
-      <p>&copy; 2025 Geo-Memories Project</p>
-    </footer>
+        <h2>Explore Concepts</h2>
+        <ul>
+          <geo-memories-list src="/data/memories.json"></geo-memories-list>
+          <li><a href="location-yosemite.html">Location: Yosemite National Park</a></li>
+          <li><a href="trail-johnmuir.html">Trail: John Muir Trail</a></li>
+          <li><a href="message1.html">Message: "This view made my day!"</a></li>
+          <li><a href="picture1.html">Picture: Sunrise over Half Dome</a></li>
+        </ul>
+      </main>
+
+      <footer>
+        <p>&copy; 2025 Geo-Memories Project</p>
+      </footer>
+    </mu-auth>
   </body>
 </html>
