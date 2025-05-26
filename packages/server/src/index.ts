@@ -10,20 +10,21 @@ import cors from "cors";
 connect("geomemories");
 
 const app = express();
-const port = process.env.PORT || 3000;
-const staticDir = process.env.STATIC || "public";
-
-app.use(express.static(staticDir));
+const port = process.env.PORT || 3010;
 
 app.use(express.json());
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      "https://vherre13.csse.dev"
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
   })
 );
+
 app.use("/auth", auth);
 app.use("/api/posts", authenticateUser, posts);
 app.use("/api/trails", authenticateUser, trails);
@@ -56,7 +57,6 @@ app.get("/post/:id", async (req: Request, res: Response) => {
   }
 });
 
-
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+  console.log(`Backend running at http://localhost:${port}`);
 });
