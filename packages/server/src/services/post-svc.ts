@@ -4,11 +4,11 @@ import { Post } from "../models/post.js";
 const PostSchema = new Schema<Post>(
   {
     userId: { type: String, required: true },
-    type: { type: String, enum: ["message", "picture"], required: true },
     content: { type: String, required: true },
-    caption: String,
-    locationId: String,
-    createdAt: { type: Date, default: Date.now },
+    picture: { type: String },
+    caption: { type: String, required: true },
+    locationId: { type: String, required: true },
+    createdAt: { type: Date, required: true }
   },
   { collection: "geomem_posts" }
 );
@@ -25,8 +25,8 @@ async function get(id: string): Promise<Post> {
   return post;
 }
 function create(data: Post): Promise<Post> {
-  const p = new PostModel(data);
-  return p.save();
+  const post = new PostModel(data);
+  return post.save();
 }
 
 async function update(id: string, data: Post): Promise<Post> {

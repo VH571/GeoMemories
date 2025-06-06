@@ -40,38 +40,34 @@ export class LoginFormElement extends LitElement {
     this.formData = { ...this.formData, [target.name]: target.value };
   }
 
- handleSubmit(event: SubmitEvent) {
-  event.preventDefault();
+  handleSubmit(event: SubmitEvent) {
+    event.preventDefault();
 
-  if (this.canSubmit) {
-    fetch(this.api || "", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(this.formData)
-    })
-      .then((res) => {
-        if (res.status !== 200) throw new Error("Login failed");
-        return res.json();
+    if (this.canSubmit) {
+      fetch(this.api || "", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(this.formData),
       })
-      .then((json: { token: string }) => {
-        const customEvent = new CustomEvent("auth:message", {
-          bubbles: true,
-          composed: true,
-          detail: [
-            "auth/signin",
-            { token: json.token, redirect: this.redirect }
-          ]
+        .then((res) => {
+          if (res.status !== 200) throw new Error("Login failed");
+          return res.json();
+        })
+        .then((json: { token: string }) => {
+          localStorage.setItem("authToken", json.token);
+
+          const customEvent = new CustomEvent("auth:message", {
+            bubbles: true,
+            composed: true,
+            detail: [
+              "auth/signin",
+              { token: json.token, redirect: this.redirect },
+            ],
+          });
+          this.dispatchEvent(customEvent);
         });
-        this.dispatchEvent(customEvent);
-      })
-      .catch((err) => {
-        console.error(err);
-        this.error = err.toString();
-      });
+    }
   }
-}
-
-
 }

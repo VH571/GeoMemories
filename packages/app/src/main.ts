@@ -10,9 +10,11 @@ import { RegisterViewElement } from "./views/register-view";
 import { LoginFormElement } from "./components/login-form";
 import { RegisterFormElement } from "./components/register-form";
 import { ProfileViewElement } from "./views/profile-view";
+import { ProfileEditElement } from "./components/profile-edit";
 import { Model, init } from "./model";
 import { Msg } from "./messages";
 import update from "./update";
+
 
 const routes: any[] = [
   { path: "/login", view: () => html`<login-view></login-view>` },
@@ -20,6 +22,11 @@ const routes: any[] = [
   { path: "/app/posts", view: () => html`<posts-view></posts-view>` },
   { path: "/app/new", view: () => html`<new-post-view></new-post-view>` },
   { path: "/app/map", view: () => html`<map-view></map-view>` },
+  {
+    path: "/profile/:userid/edit",
+    view: (params: { userid: string }) =>
+      html`<profile-edit userid="${params.userid}"></profile-edit>`,
+  },
   {
     path: "/profile/:userid",
     view: (params: { userid: string }) => {
@@ -39,17 +46,18 @@ const routes: any[] = [
 define({
   "mu-auth": Auth.Provider,
   "mu-history": History.Provider,
-  "mu-switch": class AppSwitch extends Switch.Element {
-    constructor() {
-      super(routes, "geomem:history", "geomem:auth");
-    }
-  },
   "mu-store": class AppStore extends Store.Provider<Model, Msg> {
     constructor() {
       super(update, init, "geomem:auth");
     }
   },
+  "mu-switch": class AppSwitch extends Switch.Element {
+    constructor() {
+      super(routes, "geomem:history", "geomem:auth");
+    }
+  },
   "profile-view": ProfileViewElement,
+  "profile-edit": ProfileEditElement,
   "login-view": LoginViewElement,
   "register-view": RegisterViewElement,
   "login-form": LoginFormElement,

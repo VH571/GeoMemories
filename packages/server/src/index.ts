@@ -10,7 +10,7 @@ import cors from "cors";
 import fs from "node:fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
-
+import bodyParser from "body-parser";
 connect("geomemories");
 
 const app = express();
@@ -22,12 +22,14 @@ const staticDir = process.env.STATIC
   ? path.resolve(__dirname, "..", process.env.STATIC)
   : undefined;
 
-app.use(express.json());
+app.use(bodyParser.json({ limit: "10mb" }));
+app.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
 app.use(
   cors({
     origin: ["http://localhost:5173", "http://localhost:3000"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"]
   })
 );
 

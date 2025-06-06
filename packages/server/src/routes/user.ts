@@ -5,12 +5,12 @@ const router = Router();
 
 router.get("/:userid", async (req: Request, res: Response): Promise<void> => {
   try {
-    const user = await UserModel.findOne({ username: req.params.userid });
+    const user = await UserModel.findById(req.params.userid);
     if (!user) {
       res.status(404).send("User not found");
-    } else {
-      res.json(user);
+      return;
     }
+    res.json(user);
   } catch (err) {
     res.status(500).send("Server error");
   }
