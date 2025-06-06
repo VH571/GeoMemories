@@ -18,6 +18,14 @@ export class RegisterViewElement extends LitElement {
       <h2>Sign Up</h2>
       <register-form api="/auth/register" redirect="/app">
         <label>
+          First Name:
+          <input name="firstName" type="text" />
+        </label>
+        <label>
+          Last Name:
+          <input name="lastName" type="text" />
+        </label>
+        <label>
           Username:
           <input name="username" type="text" />
         </label>

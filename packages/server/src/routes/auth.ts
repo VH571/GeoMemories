@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import express, { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import credentials from "../services/credential-svc";
+import users from "../services/user-svc.js";
 
 dotenv.config();
 const router = express.Router();
@@ -16,34 +16,43 @@ function generateAccessToken(username: string): Promise<string> {
   });
 }
 
-router.post("/register", (req: Request, res: Response) => {
-  const { username, password } = req.body;
+router.post("/register", async (req: Request, res: Response) => {
+  const { firstName, lastName, username, password } = req.body;
 
-  if (typeof username !== "string" || typeof password !== "string") {
+  if (
+    typeof firstName !== "string" ||
+    typeof lastName !== "string" ||
+    typeof username !== "string" ||
+    typeof password !== "string"
+  ) {
     res.status(400).send("Invalid input");
-  } else {
-    credentials
-      .create(username, password)
-      .then((creds) => generateAccessToken(creds.username))
-      .then((token) => res.status(201).send({ token }))
-      .catch((err) => res.status(409).send({ error: err.message }));
+    return;
+  }
+
+  try {
+    const user = await users.create({ firstName, lastName, username, password });
+    const token = await generateAccessToken(user.username);
+    res.status(201).send({ token });
+  } catch (err: any) {
+    res.status(409).send({ error: err.message });
   }
 });
 
-router.post("/login", (req: Request, res: Response) => {
+router.post("/login", async (req: Request, res: Response) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
     res.status(400).send("Missing username or password");
-  } else {
-    credentials
-      .verify(username, password)
-      .then((user) => generateAccessToken(user))
-      .then((token) => res.status(200).send({ token }))
-      .catch((err) => {
-        console.error("Login failed:", err);
-        res.status(401).send("Unauthorized");
-      });
+    return;
+  }
+
+  try {
+    const user = await users.verify(username, password);
+    const token = await generateAccessToken(user.username);
+    res.status(200).send({ token });
+  } catch (err: any) {
+    console.error("Login failed:", err);
+    res.status(401).send("Unauthorized");
   }
 });
 

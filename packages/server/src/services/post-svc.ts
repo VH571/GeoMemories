@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { Post } from "../models/post";
+import { Post } from "../models/post.js";
 
 const PostSchema = new Schema<Post>(
   {
@@ -7,11 +7,7 @@ const PostSchema = new Schema<Post>(
     type: { type: String, enum: ["message", "picture"], required: true },
     content: { type: String, required: true },
     caption: String,
-    coordinates: {
-      lat: { type: Number, required: true },
-      lng: { type: Number, required: true },
-    },
-    trailId: String,
+    locationId: String,
     createdAt: { type: Date, default: Date.now },
   },
   { collection: "geomem_posts" }
@@ -25,7 +21,7 @@ function index(): Promise<Post[]> {
 
 async function get(id: string): Promise<Post> {
   const post = await PostModel.findById(id);
-  if (!post) throw new Error(`${id} Not Found`);
+  if (!post) throw new Error(`${id} not found`);
   return post;
 }
 function create(data: Post): Promise<Post> {
@@ -35,13 +31,13 @@ function create(data: Post): Promise<Post> {
 
 async function update(id: string, data: Post): Promise<Post> {
   const updated = await PostModel.findByIdAndUpdate(id, data, { new: true });
-  if (!updated) throw `${id} not updated`;
+  if (!updated) throw new Error(`${id} not updated`);
   return updated;
 }
 
 async function remove(id: string): Promise<void> {
   const deleted = await PostModel.findByIdAndDelete(id);
-  if (!deleted) throw `${id} not deleted`;
+  if (!deleted) throw new Error(`${id} not deleted`);
 }
 
 export default { index, get, create, update, remove };

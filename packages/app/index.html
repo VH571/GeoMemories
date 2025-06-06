@@ -18,15 +18,12 @@
   <body>
     <mu-history provides="geomem:history">
       <mu-auth provides="geomem:auth" redirect="/login">
-        <article class="page">
-          <blazing-header></blazing-header>
-          <mu-switch>
-            <home-view path="/"></home-view>
-            <login-view path="/login"></login-view>
-            <register-view path="/register"></register-view>
-            <posts-view path="/posts"></posts-view>
-          </mu-switch>
-        </article>
+        <mu-store provides="geomem:model">
+          <article class="page">
+            <blazing-header></blazing-header>
+            <mu-switch></mu-switch>
+          </article>
+        </mu-store>
       </mu-auth>
     </mu-history>
 

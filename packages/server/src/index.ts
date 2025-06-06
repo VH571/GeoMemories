@@ -1,78 +1,49 @@
 import express, { Request, Response } from "express";
-import { connect } from "./services/mongo";
-import Trails from "./services/trail-svc";
-import Posts from "./services/post-svc";
-import posts from "./routes/posts";
-import trails from "./routes/trails";
-import auth, { authenticateUser } from "./routes/auth";
+import { connect } from "./services/mongo.js";
+import Locations from "./services/location-svc.js";
+import Posts from "./services/post-svc.js";
+import postRoutes from "./routes/posts.js";
+import locationRoutes from "./routes/locations.js"; 
+import authRoutes, { authenticateUser } from "./routes/auth.js";
+import userRoutes from "./routes/user.js";
 import cors from "cors";
 import fs from "node:fs/promises";
 import path from "path";
+import { fileURLToPath } from "url";
 
 connect("geomemories");
 
 const app = express();
 const port = process.env.PORT || 3010;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const staticDir = process.env.STATIC
   ? path.resolve(__dirname, "..", process.env.STATIC)
   : undefined;
-  
-app.use(express.json());
 
+app.use(express.json());
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "http://localhost:3000"
-    ],
+    origin: ["http://localhost:5173", "http://localhost:3000"],
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true
+    credentials: true,
   })
 );
 
+
 if (staticDir) {
   app.use(express.static(staticDir));
-
-  app.use("/app", (req: Request, res: Response) => {
-    const indexHtml = path.resolve(staticDir, "index.html");
-    fs.readFile(indexHtml, { encoding: "utf8" }).then((html) =>
-      res.send(html)
-    );
+  app.use("/app", async (_req, res) => {
+    const html = await fs.readFile(path.resolve(staticDir, "index.html"), "utf8");
+    res.send(html);
   });
 }
 
-app.use("/auth", auth);
-app.use("/api/posts", authenticateUser, posts);
-app.use("/api/trails", authenticateUser, trails);
-
-app.get("/trails", async (req: Request, res: Response) => {
-  const data = await Trails.index();
-  res.json(data);
-});
-
-app.get("/trail/:id", async (req: Request, res: Response) => {
-  try {
-    const data = await Trails.get(req.params.id);
-    res.json(data);
-  } catch {
-    res.status(404).send();
-  }
-});
-
-app.get("/posts", async (req: Request, res: Response) => {
-  const data = await Posts.index();
-  res.json(data);
-});
-
-app.get("/post/:id", async (req: Request, res: Response) => {
-  try {
-    const data = await Posts.get(req.params.id);
-    res.json(data);
-  } catch {
-    res.status(404).send();
-  }
-});
+app.use("/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/posts", authenticateUser, postRoutes);
+app.use("/api/locations", authenticateUser, locationRoutes);
 
 app.listen(port, () => {
   console.log(`Backend running at http://localhost:${port}`);

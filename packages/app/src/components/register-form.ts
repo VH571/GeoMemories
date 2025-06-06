@@ -1,6 +1,9 @@
 import { html, css, LitElement } from "lit";
 import { property, state } from "lit/decorators.js";
+
 interface RegisterFormData {
+  firstName?: string;
+  lastName?: string;
   username?: string;
   password?: string;
 }
@@ -12,7 +15,8 @@ export class RegisterFormElement extends LitElement {
   @state() error?: string;
 
   get canSubmit(): boolean {
-    return Boolean(this.api && this.formData.username && this.formData.password);
+    const { firstName, lastName, username, password } = this.formData;
+    return Boolean(this.api && firstName && lastName && username && password);
   }
 
   override render() {
@@ -41,45 +45,38 @@ export class RegisterFormElement extends LitElement {
     const target = event.target as HTMLInputElement;
     const name = target?.name;
     const value = target?.value;
-    const prevData = this.formData;
 
-    switch (name) {
-      case "username":
-        this.formData = { ...prevData, username: value };
-        break;
-      case "password":
-        this.formData = { ...prevData, password: value };
-        break;
+    if (name) {
+      this.formData = { ...this.formData, [name]: value };
     }
   }
 
   handleSubmit(submitEvent: SubmitEvent) {
-  submitEvent.preventDefault();
+    submitEvent.preventDefault();
 
-  if (this.canSubmit) {
-    fetch(this.api || "", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(this.formData)
-    })
-      .then((res) => {
-        if (res.status !== 201) throw new Error("Registration failed");
-        return res.json();
+    if (this.canSubmit) {
+      fetch(this.api || "", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(this.formData)
       })
-      .then((json: { token: string }) => {
-        const customEvent = new CustomEvent("auth:message", {
-          bubbles: true,
-          composed: true,
-          detail: ["auth/signin", { token: json.token, redirect: this.redirect }]
+        .then((res) => {
+          if (res.status !== 201) throw new Error("Registration failed");
+          return res.json();
+        })
+        .then((json: { token: string }) => {
+          const customEvent = new CustomEvent("auth:message", {
+            bubbles: true,
+            composed: true,
+            detail: ["auth/signin", { token: json.token, redirect: this.redirect }]
+          });
+          console.log("dispatching registration message", customEvent);
+          this.dispatchEvent(customEvent);
+        })
+        .catch((error: Error) => {
+          console.log(error);
+          this.error = error.toString();
         });
-        console.log("dispatching registration message", customEvent);
-        this.dispatchEvent(customEvent);
-      })
-      .catch((error: Error) => {
-        console.log(error);
-        this.error = error.toString();
-      });
+    }
   }
-}
-
 }
