@@ -29,17 +29,19 @@ function verify(username: string, password: string): Promise<string> {
   return credentialModel
     .find({ username })
     .then((found) => {
-      console.log("Found credentials:", found);
-      if (!found || found.length !== 1)
-        throw "Invalid username or password";
+      if (!found || found.length !== 1) {
+        console.error("User not found or duplicate");
+        throw "Invalid username or password";}
       return found[0];
     })
     .then((credsOnFile: Credential) =>
-      bcrypt.compare(password, credsOnFile.hashedPassword).then((result: boolean) => {
-        console.log("Password match?", result);
-        if (!result) throw "Invalid username or password";
-        return credsOnFile.username;
-      })
+      bcrypt
+        .compare(password, credsOnFile.hashedPassword)
+        .then((result: boolean) => {
+          console.log("bcrypt.compare result:", result);
+          if (!result) throw "Invalid username or password";
+          return credsOnFile.username;
+        })
     );
 }
 

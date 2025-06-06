@@ -40,7 +40,10 @@ router.post("/login", (req: Request, res: Response) => {
       .verify(username, password)
       .then((user) => generateAccessToken(user))
       .then((token) => res.status(200).send({ token }))
-      .catch(() => res.status(401).send("Unauthorized"));
+      .catch((err) => {
+        console.error("Login failed:", err);
+        res.status(401).send("Unauthorized");
+      });
   }
 });
 

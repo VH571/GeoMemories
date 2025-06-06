@@ -25,10 +25,10 @@ export class LoginFormElement extends LitElement {
 
   render() {
     return html`
-      <form @change=${this.handleChange} @submit=${this.handleSubmit}>
+      <form @input=${this.handleChange} @submit=${this.handleSubmit}>
         <slot></slot>
         <slot name="button">
-          <button ?disabled=${!this.canSubmit} type="submit">Login</button>
+          <button ?disabled=${!this.canSubmit} type="submit">Submit</button>
         </slot>
         <p class="error">${this.error}</p>
       </form>

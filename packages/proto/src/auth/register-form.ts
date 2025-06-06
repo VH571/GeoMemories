@@ -20,13 +20,10 @@ export class RegisterFormElement extends LitElement {
 
   override render() {
     return html`
-      <form
-        @change=${(e: InputEvent) => this.handleChange(e)}
-        @submit=${(e: SubmitEvent) => this.handleSubmit(e)}
-      >
+      <form @input=${this.handleChange} @submit=${this.handleSubmit}>
         <slot></slot>
         <slot name="button">
-          <button type="submit" ?disabled=${!this.canSubmit}>Register</button>
+          <button type="submit" ?disabled=${!this.canSubmit}>Submit</button>
         </slot>
         <p class="error">${this.error}</p>
       </form>
