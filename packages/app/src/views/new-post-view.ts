@@ -296,7 +296,7 @@ export class NewPostViewElement extends LitElement {
 
       if (res.ok) {
         const saved = await res.json();
-        console.log("✅ Post submitted:", saved);
+        console.log("Post submitted:", saved);
 
         this.formData = {
           content: "",
