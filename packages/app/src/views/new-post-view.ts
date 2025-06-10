@@ -258,7 +258,7 @@ export class NewPostViewElement extends LitElement {
 
   async loadLocations() {
     try {
-      const res = await fetch("http://localhost:3010/api/locations", {
+      const res = await fetch("/api/locations", {
         headers: {
           Authorization: `Bearer ${this.token}`,
         },
@@ -519,7 +519,7 @@ export class NewPostViewElement extends LitElement {
     }
 
     try {
-      const res = await fetch("http://localhost:3010/api/locations", {
+      const res = await fetch("/api/locations", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -594,7 +594,7 @@ export class NewPostViewElement extends LitElement {
     };
 
     try {
-      const res = await fetch("http://localhost:3010/api/posts", {
+      const res = await fetch("/api/posts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

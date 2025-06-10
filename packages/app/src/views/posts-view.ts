@@ -44,7 +44,7 @@ export class PostsViewElement extends LitElement {
 
   async loadPosts() {
     try {
-      const res = await fetch("http://localhost:3010/api/posts", {
+      const res = await fetch("/api/posts", {
         headers: { Authorization: `Bearer ${this.token}` },
       });
       if (res.ok) {
@@ -57,7 +57,7 @@ export class PostsViewElement extends LitElement {
 
   async loadLocations() {
     try {
-      const res = await fetch("http://localhost:3010/api/locations", {
+      const res = await fetch("/api/locations", {
         headers: { Authorization: `Bearer ${this.token}` },
       });
       if (res.ok) {

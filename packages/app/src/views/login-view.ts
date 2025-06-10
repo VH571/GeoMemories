@@ -162,7 +162,8 @@ export class LoginViewElement extends LitElement {
         <h1 class="title">Login</h1>
         <p class="subtitle">Good to see you again! Let's explore.</p>
 
-        <login-form api="http://localhost:3010" redirect="/app">
+        <login-form api="/auth" redirect="/app">
+
           <div class="form-group">
             <input
               name="username"
