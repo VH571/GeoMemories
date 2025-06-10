@@ -31,15 +31,21 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
+console.log("STATIC env:", process.env.STATIC);
+console.log("Resolved staticDir:", staticDir);
 
 if (staticDir) {
   app.use(express.static(staticDir));
-  app.get("*", async (req, res, next) => {
-    if (req.path.startsWith("/api") || req.path.startsWith("/auth")) return next();
-    const html = await fs.readFile(path.join(staticDir, "index.html"), "utf8");
+  app.get("/app", async (_req, res) => {
+  try {
+    const html = await fs.readFile(path.resolve(staticDir, "index.html"), "utf8");
     res.setHeader("Content-Type", "text/html");
     res.send(html);
-  });
+  } catch (err) {
+    console.error("Failed to serve /app:", err);
+    res.status(500).send("Error loading app");
+  }
+});
 }
 
 app.use("/auth", authRoutes);
