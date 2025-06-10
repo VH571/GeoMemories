@@ -34,8 +34,11 @@ app.use(cors({
 
 if (staticDir) {
   app.use(express.static(staticDir));
-  app.use("/app", async (_req, res) => {
+
+  app.get("*", async (req, res, next) => {
+    if (req.path.startsWith("/api") || req.path.startsWith("/auth")) return next();
     const html = await fs.readFile(path.resolve(staticDir, "index.html"), "utf8");
+    res.setHeader("Content-Type", "text/html");
     res.send(html);
   });
 }
