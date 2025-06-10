@@ -15,7 +15,6 @@ import { Model, init } from "./model";
 import { Msg } from "./messages";
 import update from "./update";
 
-
 const routes: any[] = [
   { path: "/login", view: () => html`<login-view></login-view>` },
   { path: "/register", view: () => html`<register-view></register-view>` },
@@ -48,7 +47,7 @@ define({
   "mu-history": History.Provider,
   "mu-store": class AppStore extends Store.Provider<Model, Msg> {
     constructor() {
-      super(update, init, "geomem:auth");
+      super(update, init, "geomem:model");
     }
   },
   "mu-switch": class AppSwitch extends Switch.Element {
@@ -67,4 +66,35 @@ define({
   "posts-view": PostsViewElement,
   "new-post-view": NewPostViewElement,
   "map-view": MapViewElement,
+});
+customElements.whenDefined("mu-auth").then(() => {
+  window.addEventListener("message", (event: Event) => {
+    const messageEvent = event as MessageEvent;
+    const { type, payload } = messageEvent.data;
+
+    if (type === "auth/success") {
+      console.log("Received auth/success, payload:", payload);
+
+      const auth = document.querySelector("mu-auth");
+      console.log("Found mu-auth element:", auth);
+
+      if (auth) {
+        const loginData = {
+          authenticated: true,
+          username: payload.username || payload.user?.username,
+          token: payload.token,
+        };
+
+        console.log("Dispatching auth/login with:", loginData);
+
+        auth.dispatchEvent(
+          new CustomEvent("message", {
+            bubbles: true,
+            composed: true,
+            detail: ["auth/login", loginData],
+          })
+        );
+      }
+    }
+  });
 });

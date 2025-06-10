@@ -10,9 +10,13 @@
   "dependencies": {
     "@calpoly/mustang": "^1.0.15",
     "lit": "^3.3.0",
-    "server": "file:../server"
+    "mapbox-gl": "^3.12.0",
+    "server": "file:../server",
+    "vite-plugin-lit-css": "^2.1.0"
   },
   "devDependencies": {
+    "@types/leaflet": "^1.9.18",
+    "@types/mapbox-gl": "^3.4.1",
     "vite": "^6.0.0"
   }
 }

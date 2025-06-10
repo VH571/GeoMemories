@@ -17,7 +17,8 @@ function create(userData: Omit<User, "hashedPassword"> & { password: string }): 
         firstName: userData.firstName,
         lastName: userData.lastName,
         username: userData.username,
-        hashedPassword
+        hashedPassword,
+        profilePicture: userData.profilePicture
       });
       return user.save();
     });

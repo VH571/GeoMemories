@@ -7,8 +7,24 @@ export default function update(
   msg: Msg,
   apply: Update.ApplyMap<Model>,
   user: Auth.User
-) {
+): void {
   switch (msg[0]) {
+    case "auth/success":
+      apply(model => ({
+        ...model,
+        user: msg[1].user,
+        token: msg[1].token
+      }));
+      break;
+
+    case "auth/logout":
+      apply(model => ({
+        ...model,
+        user: undefined,
+        token: undefined
+      }));
+      break;
+
     case "profile/select":
       fetch(`/api/users/${msg[1].userid}`, {
         headers: Auth.headers(user)

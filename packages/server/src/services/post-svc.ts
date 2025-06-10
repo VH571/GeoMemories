@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { Post } from "../models/post.js";
+import UserModel from "../models/user.js";
 
 const PostSchema = new Schema<Post>(
   {
@@ -14,6 +15,20 @@ const PostSchema = new Schema<Post>(
 );
 
 const PostModel = model<Post>("Post", PostSchema);
+
+export async function getPostsWithUserInfo() {
+  const posts = await PostModel.find().lean();
+  const users = await UserModel.find({}, "username profilePicture").lean();
+
+  const userMap = Object.fromEntries(
+    users.map((user) => [user.username, user.profilePicture])
+  );
+
+  return posts.map((post) => ({
+    ...post,
+    profilePicture: userMap[post.userId] || null,
+  }));
+}
 
 function index(): Promise<Post[]> {
   return PostModel.find();
@@ -40,4 +55,4 @@ async function remove(id: string): Promise<void> {
   if (!deleted) throw new Error(`${id} not deleted`);
 }
 
-export default { index, get, create, update, remove };
+export default { index, get, create, update, remove, getPostsWithUserInfo  };

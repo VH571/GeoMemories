@@ -5,6 +5,7 @@ export interface User {
   lastName: string;
   username: string;
   hashedPassword: string;
+  profilePicture?: string;
 }
 
 const UserSchema = new Schema<User>(
@@ -13,6 +14,7 @@ const UserSchema = new Schema<User>(
     lastName: { type: String, required: true, trim: true },
     username: { type: String, required: true, trim: true, unique: true },
     hashedPassword: { type: String, required: true },
+    profilePicture: { type: String, trim: true },
   },
   { collection: "users" }
 );

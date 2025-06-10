@@ -1,12 +1,12 @@
 import express, { Request, Response } from "express";
 import { Post } from "../models/post.js";
-import Posts from "../services/post-svc.js";
+import Posts, { getPostsWithUserInfo } from "../services/post-svc.js"; 
 
 const router = express.Router();
 
 router.get("/", (_, res: Response) => {
-  Posts.index()
-    .then((list: Post[]) => res.json(list))
+  getPostsWithUserInfo()
+    .then((list) => res.json(list))
     .catch((err) => res.status(500).send(err));
 });
 

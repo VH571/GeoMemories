@@ -21,20 +21,36 @@ export class ProfileViewElement extends LitElement {
 
   render() {
     if (!this.user) {
-      return html`<p>Loading profile for <strong>${this.userid}</strong>...</p>`;
+      return html`<p>
+        Loading profile for <strong>${this.userid}</strong>...
+      </p>`;
     }
 
     return html`
       <h1>${this.user.firstName} ${this.user.lastName}</h1>
       <p>Username: ${this.user.username}</p>
-      
     `;
   }
 
   static styles = css`
     :host {
       display: block;
-      padding: 1rem;
+      padding: 2rem;
+      color: var(--color-text-default);
+      background-color: var(--color-background-page);
+      font-family: var(--font-family-base);
+    }
+
+    .container-post {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      color: var(--color-text-header);
+      font-family: var(--font-family-display);
     }
   `;
 }

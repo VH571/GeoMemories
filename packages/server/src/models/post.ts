@@ -6,4 +6,5 @@ export interface Post {
   caption: string;
   locationId: string;
   createdAt: Date; 
+  profilePicture?: string; 
 }

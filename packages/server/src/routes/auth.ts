@@ -17,7 +17,7 @@ function generateAccessToken(username: string): Promise<string> {
 }
 
 router.post("/register", async (req: Request, res: Response) => {
-  const { firstName, lastName, username, password } = req.body;
+  const { firstName, lastName, username, password, profilePicture } = req.body;
 
   if (
     typeof firstName !== "string" ||
@@ -30,9 +30,20 @@ router.post("/register", async (req: Request, res: Response) => {
   }
 
   try {
-    const user = await users.create({ firstName, lastName, username, password });
+    const user = await users.create({
+      firstName,
+      lastName,
+      username,
+      password,
+      profilePicture,
+    });
     const token = await generateAccessToken(user.username);
-    res.status(201).send({ token });
+    res.status(201).send({
+      token,
+      user: {
+        id: user.username,
+      },
+    });
   } catch (err: any) {
     res.status(409).send({ error: err.message });
   }
@@ -49,7 +60,12 @@ router.post("/login", async (req: Request, res: Response) => {
   try {
     const user = await users.verify(username, password);
     const token = await generateAccessToken(user.username);
-    res.status(200).send({ token });
+    res.status(200).send({
+      token,
+      user: {
+        id: user.username,
+      },
+    });
   } catch (err: any) {
     console.error("Login failed:", err);
     res.status(401).send("Unauthorized");

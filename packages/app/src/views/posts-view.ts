@@ -1,9 +1,83 @@
+import { css } from "@calpoly/mustang";
 import { LitElement, html } from "lit";
-import { customElement } from "lit/decorators.js";
-
+import { customElement, state } from "lit/decorators.js";
+import { Post, Location } from "server/models";
+import type { Auth } from "@calpoly/mustang";
+import { Observer } from "@calpoly/mustang";
+import "../components/feed-posts ";
 @customElement("posts-view")
 export class PostsViewElement extends LitElement {
-  render() {
-    return html`<h2>All Posts</h2>`;
+  private _authObserver = new Observer<Auth.Model>(this, "geomem:auth");
+  @state() posts: Post[] = [];
+  @state() locations: Location[] = [];
+  @state() token = "";
+  @state() userId = "";
+
+  static styles = css`
+    :host {
+      display: block;
+      padding: 2rem;
+    }
+    .container-post {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+    }
+    .header {margin: 0;}
+  `;
+
+  connectedCallback() {
+    super.connectedCallback();
+    this._authObserver.observe((auth) => {
+      if (auth.user?.authenticated) {
+        this.token = auth.token ?? "";
+        this.userId = auth.user.username ?? "";
+        this.loadPosts();
+        this.loadLocations();
+      } else {
+        this.token = "";
+        this.userId = "";
+      }
+    });
   }
+
+  async loadPosts() {
+    try {
+      const res = await fetch("http://localhost:3010/api/posts", {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+      if (res.ok) {
+        this.posts = await res.json();
+      }
+    } catch (err) {
+      console.error("Error loading posts:", err);
+    }
+  }
+
+  async loadLocations() {
+    try {
+      const res = await fetch("http://localhost:3010/api/locations", {
+        headers: { Authorization: `Bearer ${this.token}` },
+      });
+      if (res.ok) {
+        this.locations = await res.json();
+      }
+    } catch (err) {
+      console.error("Error loading locations:", err);
+    }
+  }
+
+  render() {
+    return html`
+      <div class="container-post">
+        <h2 class = "header" >All Posts</h2>
+        <feed-posts 
+          .posts=${this.posts}
+          .locations=${this.locations}
+        ></feed-posts>
+      </div>
+    `;
+  }
+
 }

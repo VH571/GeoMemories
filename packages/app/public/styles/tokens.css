@@ -2,7 +2,8 @@
     --color-background-page: #FEFAE0;
     --color-background-header: #2e2e2e;
     --color-text-default: #606C38;
-    --color-text-header: #FEFAE0;
+    --color-text-header: #BC6C25;
+    --color-text-bright: #FEFAE0;
     --color-accent: #BC6C25;
     --color-link: var(--color-accent);
 
@@ -11,8 +12,8 @@
     --font-family-base: 'Livvic', Arial, sans-serif;
     --font-family-display: 'Rammetto One', Impact, sans-serif;
 
-    --font-weight-normal: 400;
-    --font-weight-bold: 700;
+    --font-weight-normal: 600;
+    --font-weight-bold: 800;
 }
 
 body.dark-mode {
@@ -21,5 +22,6 @@ body.dark-mode {
     --color-accent: #BC6C25;
     --color-text-default: #606C38;
     --color-text-header: #BC6C25;
+    --color-text-bright: #FEFAE0;
     --color-link: var(--color-accent);
 }
