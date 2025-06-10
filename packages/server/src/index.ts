@@ -19,8 +19,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const staticDir = process.env.STATIC
-  ? path.resolve(__dirname, "..", process.env.STATIC)
-  : undefined;
+  ? path.resolve(__dirname, "../../../", process.env.STATIC)
+  : path.resolve(__dirname, "../../../packages/app/dist");
 
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
