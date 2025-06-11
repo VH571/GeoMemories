@@ -34,24 +34,24 @@ app.use(cors({
 console.log("STATIC env:", process.env.STATIC);
 console.log("Resolved staticDir:", staticDir);
 
+app.use("/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/posts", authenticateUser, postRoutes);
+app.use("/api/locations", authenticateUser, locationRoutes);
+
 if (staticDir) {
   app.use(express.static(staticDir));
-  app.get("/app", async (_req, res) => {
+  app.get(/^\/(?!api\/|auth\/).*/, async (_req, res) => {
   try {
     const html = await fs.readFile(path.resolve(staticDir, "index.html"), "utf8");
     res.setHeader("Content-Type", "text/html");
     res.send(html);
   } catch (err) {
-    console.error("Failed to serve /app:", err);
+    console.error("Failed to serve fallback:", err);
     res.status(500).send("Error loading app");
   }
 });
 }
-
-app.use("/auth", authRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/posts", authenticateUser, postRoutes);
-app.use("/api/locations", authenticateUser, locationRoutes);
 
 app.listen(port, () => {
   console.log(`Backend running at http://localhost:${port}`);
