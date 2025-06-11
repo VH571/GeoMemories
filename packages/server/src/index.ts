@@ -3,7 +3,7 @@ import { connect } from "./services/mongo.js";
 import Locations from "./services/location-svc.js";
 import Posts from "./services/post-svc.js";
 import postRoutes from "./routes/posts.js";
-import locationRoutes from "./routes/locations.js"; 
+import locationRoutes from "./routes/locations.js";
 import authRoutes, { authenticateUser } from "./routes/auth.js";
 import userRoutes from "./routes/user.js";
 import cors from "cors";
@@ -18,18 +18,20 @@ const port = process.env.PORT || 3010;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const rootDir = path.resolve(__dirname, "../../");
 const staticDir = process.env.STATIC
-  ? path.resolve(__dirname, "../../../", process.env.STATIC)
-  : path.resolve(__dirname, "../../../packages/app/dist");
-
+  ? path.resolve(rootDir, process.env.STATIC)
+  : path.resolve(rootDir, "packages/app/dist");
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
-app.use(cors({
-  origin: ["http://localhost:5173", "http://localhost:3000"],
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  credentials: true,
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "http://localhost:3000"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 console.log("STATIC env:", process.env.STATIC);
 console.log("Resolved staticDir:", staticDir);
@@ -42,13 +44,16 @@ app.use("/api/locations", authenticateUser, locationRoutes);
 if (staticDir) {
   app.use(express.static(staticDir));
   app.get(/^\/(?!api\/|auth\/).*/, async (_req, res) => {
+  const indexPath = path.resolve(staticDir, "index.html");
+  console.log("Looking for index.html at:", indexPath);
   try {
-    const html = await fs.readFile(path.resolve(staticDir, "index.html"), "utf8");
+    const html = await fs.readFile(indexPath, "utf8");
+    console.log("Successfully loaded index.html");
     res.setHeader("Content-Type", "text/html");
     res.send(html);
   } catch (err) {
     console.error("Failed to serve fallback:", err);
-    res.status(500).send("Error loading app");
+    res.status(500).send(`Error loading app: ${err}`);
   }
 });
 }
