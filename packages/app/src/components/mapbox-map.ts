@@ -20,8 +20,7 @@ export class MapboxMap extends LitElement {
     }
 
     #map {
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      
     }
   `;
 
@@ -87,11 +86,7 @@ export class MapboxMap extends LitElement {
   }
 
   render() {
-    console.log("Adding markers...");
-    console.log("Posts:", this.posts);
-    console.log("Locations:", this.locations);
-
-    return html`<div id="map"></div>`;
+    return html`<div id="map"> </div>`;
   }
 
 

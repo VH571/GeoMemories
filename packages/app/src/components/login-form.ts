@@ -21,30 +21,19 @@ export class LoginFormElement extends LitElement {
       color: red;
       margin-top: 0.5rem;
     }
-
     button[type="submit"] {
       width: 100%;
       height: 61px;
       background: #606c38;
       border: none;
-      border-radius: 0;
+      border-radius: 20px;
       color: white;
       font-size: 14px;
       font-family: "Poppins", sans-serif;
       font-weight: 500;
       cursor: pointer;
-      margin-bottom: 30px;
+      margin-bottom: 15px;
       transition: background-color 0.2s ease;
-    }
-
-    button[type="submit"]:hover:not(:disabled) {
-      background: #505a30;
-    }
-
-    button[type="submit"]:disabled {
-      background: #a0a0a0;
-      cursor: not-allowed;
-      opacity: 0.6;
     }
   `;
 
@@ -69,13 +58,14 @@ export class LoginFormElement extends LitElement {
     event.preventDefault();
     if (!this.canSubmit || !this.api) return;
     try {
-      const res = await fetch(`${this.api}/auth/login`, {
+      const res = await fetch(`${this.api}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(this.formData),
       });
       if (!res.ok) {
         const errorMsg = await res.text();
+        console.log(errorMsg)
         throw new Error(errorMsg || "Login failed");
       }
       const { token } = await res.json();

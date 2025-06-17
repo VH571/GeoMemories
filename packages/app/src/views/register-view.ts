@@ -10,7 +10,6 @@ export class RegisterViewElement extends LitElement {
       justify-content: center;
       align-items: center;
       width: 100%;
-      height: 100vh;
       font-family: "Poppins", sans-serif;
     }
 
@@ -26,20 +25,18 @@ export class RegisterViewElement extends LitElement {
       font-size: 40px;
       font-family: "Rammetto One", cursive;
       font-weight: 400;
-      color: #1d1d20;
       text-align: center;
-      margin: 0 0 24px 0;
+      margin: 0 0 0px 0;
       line-height: 1.2;
     }
 
     .subtitle {
       text-align: center;
-      color: #4a4a4a;
       font-size: 14px;
       font-family: "Livvic", sans-serif;
       font-weight: 400;
       opacity: 0.67;
-      margin-bottom: 25px;
+      margin-top: 5px;
     }
 
     .form-container {
@@ -56,23 +53,19 @@ export class RegisterViewElement extends LitElement {
       gap: 10px;
     }
 
-    .form-group {
-      margin-bottom: 20px;
-    }
-
     .form-input {
       width: 100%;
-      height: 72.4px;
+      height: 72px;
       background: white;
+      border-radius: 20px;
       border: none;
       outline: 1px #eeeeee solid;
       outline-offset: -0.5px;
-      padding: 0 19px;
+      padding: 0 20px;
       font-size: 14px;
-      font-family: "Poppins", sans-serif;
-      font-weight: 500;
       color: #1a1b23;
       box-sizing: border-box;
+      margin-bottom: 10px;
     }
 
     .form-input::placeholder {
@@ -133,14 +126,12 @@ export class RegisterViewElement extends LitElement {
     .login-link span {
       color: #818181;
       font-size: 12px;
-      font-family: "Poppins", sans-serif;
       font-weight: 400;
     }
 
     .login-link a {
       color: #606c38;
       font-size: 12px;
-      font-family: "Poppins", sans-serif;
       font-weight: 500;
       text-decoration: underline;
     }
@@ -155,45 +146,34 @@ export class RegisterViewElement extends LitElement {
         <div class="form-container">
           <register-form api="/auth/register" redirect="/app">
             <div class="form-row">
-              <div class="form-group">
-                <input
-                  name="firstName"
-                  type="text"
-                  class="form-input"
-                  placeholder="First Name"
-                  required
-                />
-              </div>
-              <div class="form-group">
-                <input
-                  name="lastName"
-                  type="text"
-                  class="form-input"
-                  placeholder="Last Name"
-                  required
-                />
-              </div>
-            </div>
-
-            <div class="form-group full-width">
               <input
-                name="username"
-                type="email"
+                name="firstName"
+                type="text"
                 class="form-input"
-                placeholder="Email"
+                placeholder="First Name"
+                required
+              />
+              <input
+                name="lastName"
+                type="text"
+                class="form-input"
+                placeholder="Last Name"
                 required
               />
             </div>
-
-            <div class="form-group full-width">
-              <input
-                name="password"
-                type="password"
-                class="form-input"
-                placeholder="Password"
-                required
-              />
-            </div>
+            <input
+              name="username"
+              class="form-input"
+              placeholder="Username"
+              required
+            />
+            <input
+              name="password"
+              type="password"
+              class="form-input"
+              placeholder="Password"
+              required
+            />
 
             <div class="form-group">
               <div class="avatar-upload">

@@ -68,7 +68,7 @@ router.post("/login", async (req: Request, res: Response) => {
     });
   } catch (err: any) {
     console.error("Login failed:", err);
-    res.status(401).send("Unauthorized");
+    res.status(401).send(err.message);
   }
 });
 

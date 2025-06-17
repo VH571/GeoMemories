@@ -23,6 +23,7 @@ export class RegisterFormElement extends LitElement {
   static styles = css`
     .error:not(:empty) {
       color: red;
+      font-size: 14px;
       margin-top: 0.5rem;
     }
 
@@ -31,24 +32,12 @@ export class RegisterFormElement extends LitElement {
       height: 61px;
       background: #606c38;
       border: none;
-      border-radius: 0;
+      border-radius: 20px;
       color: white;
       font-size: 14px;
-      font-family: "Poppins", sans-serif;
       font-weight: 500;
       cursor: pointer;
-      margin-bottom: 30px;
-      transition: background-color 0.2s ease;
-    }
-
-    button[type="submit"]:hover:not(:disabled) {
-      background: #505a30;
-    }
-
-    button[type="submit"]:disabled {
-      background: #a0a0a0;
-      cursor: not-allowed;
-      opacity: 0.6;
+      margin-bottom: 15px;
     }
   `;
 
@@ -97,8 +86,11 @@ export class RegisterFormElement extends LitElement {
         },
         body: JSON.stringify(this.formData),
       })
-        .then((res) => {
-          if (res.status !== 201) throw new Error("Registration failed");
+        .then(async (res) => {
+          if (!res.ok) {
+            const { error } = await res.json();
+            throw new Error(error || "Registration failed");
+          }
           return res.json();
         })
         .then((json: { token: string }) => {
@@ -115,7 +107,7 @@ export class RegisterFormElement extends LitElement {
         })
         .catch((err: Error) => {
           console.error(err);
-          this.error = err.toString();
+          this.error = err.message;
         });
     }
   }
