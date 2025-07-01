@@ -36,7 +36,7 @@ export class ProfileViewElement extends LitElement {
     :host {
       display: block;
       padding: 2rem;
-      color: var(--color-text-default);
+      color: var(--color-text);
       background-color: var(--color-background-page);
       font-family: var(--font-family-base);
     }
@@ -49,7 +49,7 @@ export class ProfileViewElement extends LitElement {
     }
 
     h2 {
-      color: var(--color-text-header);
+      color: var(--color-text);
       font-family: var(--font-family-display);
     }
   `;

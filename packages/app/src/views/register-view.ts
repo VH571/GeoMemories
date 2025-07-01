@@ -111,7 +111,7 @@ export class RegisterViewElement extends LitElement {
 
     .upload-hint {
       font-size: 0.85rem;
-      color: var(--color-text-default, #606c38);
+      color: var(--color-text, #606c38);
       opacity: 0.8;
     }
 

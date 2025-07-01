@@ -1,6 +1,6 @@
 import { Auth, define, History, Switch, Store } from "@calpoly/mustang";
 import { html } from "lit";
-import { BlazingHeader as HeaderElement } from "./components/blazing-header";
+import { GeomemHeader as HeaderElement } from "./components/geomem-header";
 import { HomeViewElement } from "./views/home-view";
 import { PostsViewElement } from "./views/posts-view";
 import { NewPostViewElement } from "./views/new-post-view";
@@ -47,7 +47,7 @@ define({
   "mu-history": History.Provider,
   "mu-store": class AppStore extends Store.Provider<Model, Msg> {
     constructor() {
-      super(update, init, "geomem:model");
+      super(update, init, "geomem:auth");
     }
   },
   "mu-switch": class AppSwitch extends Switch.Element {
@@ -61,40 +61,9 @@ define({
   "register-view": RegisterViewElement,
   "login-form": LoginFormElement,
   "register-form": RegisterFormElement,
-  "blazing-header": HeaderElement,
+  "geomem-header": HeaderElement,
   "home-view": HomeViewElement,
   "posts-view": PostsViewElement,
   "new-post-view": NewPostViewElement,
   "map-view": MapViewElement,
-});
-customElements.whenDefined("mu-auth").then(() => {
-  window.addEventListener("message", (event: Event) => {
-    const messageEvent = event as MessageEvent;
-    const { type, payload } = messageEvent.data;
-
-    if (type === "auth/success") {
-      console.log("Received auth/success, payload:", payload);
-
-      const auth = document.querySelector("mu-auth");
-      console.log("Found mu-auth element:", auth);
-
-      if (auth) {
-        const loginData = {
-          authenticated: true,
-          username: payload.username || payload.user?.username,
-          token: payload.token,
-        };
-
-        console.log("Dispatching auth/login with:", loginData);
-
-        auth.dispatchEvent(
-          new CustomEvent("message", {
-            bubbles: true,
-            composed: true,
-            detail: ["auth/login", loginData],
-          })
-        );
-      }
-    }
-  });
 });

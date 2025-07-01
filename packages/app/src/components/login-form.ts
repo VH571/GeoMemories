@@ -1,3 +1,4 @@
+import { Message } from "@calpoly/mustang";
 import { html, css, LitElement } from "lit";
 import { property, state } from "lit/decorators.js";
 
@@ -57,36 +58,70 @@ export class LoginFormElement extends LitElement {
   async handleSubmit(event: SubmitEvent) {
     event.preventDefault();
     if (!this.canSubmit || !this.api) return;
+
     try {
+      // login
       const res = await fetch(`${this.api}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(this.formData),
       });
+
       if (!res.ok) {
         const errorMsg = await res.text();
-        console.log(errorMsg)
         throw new Error(errorMsg || "Login failed");
       }
+
       const { token } = await res.json();
-      const username = this.formData.username || "";
-      const customEvent = new CustomEvent("auth:message", {
-        bubbles: true,
-        composed: true,
-        detail: [
-          "auth/signin",
-          {
-            token: token,
-            username: username,
+
+      //fetch user profile
+      const profileRes = await fetch(`${this.api}/me`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!profileRes.ok) {
+        throw new Error("Failed to fetch user profile");
+      }
+
+      const profile = await profileRes.json();
+
+      //dispatch to mu-auth
+      const muAuth = document.querySelector("mu-auth");
+      if (muAuth) {
+        muAuth.dispatchEvent(
+          new CustomEvent("auth:message", {
+            bubbles: true,
+            composed: true,
+            detail: [
+              "auth/signin",
+              {
+                token: token,
+                authenticated: true,
+                username: profile.username,
+                redirect: this.redirect,
+              },
+            ],
+          })
+        );
+      }
+      // Dispatch to <mu-store>
+      console.log("this is the profile: ", profile)
+      this.dispatchEvent(
+        new CustomEvent("login-success", {
+          bubbles: true,
+          composed: true,
+          detail: {
+            token,
+            profile,
             redirect: this.redirect,
           },
-        ],
-      });
-      this.dispatchEvent(customEvent);
-      console.log("Dispatched auth/success with:", {
-        token,
-        username,
-      });
+        })
+      );
+
+      console.log("Login successful:", profile);
       this.formData = {};
       this.error = undefined;
     } catch (err: any) {

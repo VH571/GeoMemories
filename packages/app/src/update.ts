@@ -1,83 +1,62 @@
+import { Auth, Update } from "@calpoly/mustang";
 import { Msg } from "./messages";
 import { Model } from "./model";
-import { Auth, Update } from "@calpoly/mustang";
-import type { User } from "server/models";
+import * as API from "./services/api";
 
 export default function update(
-  msg: Msg,
+  message: Msg,
   apply: Update.ApplyMap<Model>,
   user: Auth.User
-): void {
-  switch (msg[0]) {
-    case "auth/success":
-      apply(model => ({
-        ...model,
-        user: msg[1].user,
-        token: msg[1].token
-      }));
-      break;
+) {
+  console.log("MESSAGE RECEIVED:", message);
 
-    case "auth/logout":
-      apply(model => ({
-        ...model,
-        user: undefined,
-        token: undefined
-      }));
+  switch (message[0]) {
+    case "cert/success": {
+      console.log("PROFILE RECEIVED:", message[1].user);
+      const { token, user: authUser } = message[1];
+      apply((model) => ({ ...model, token, authUser }));
       break;
+    }
 
-    case "profile/select":
-      fetch(`/api/users/${msg[1].userid}`, {
-        headers: Auth.headers(user)
-      })
-        .then(res => res.ok ? res.json() : undefined)
-        .then(profile => profile && apply(model => ({ ...model, profile })));
+    case "cert/logout": {
+      apply(() => ({}));
       break;
+    }
 
-    case "posts/load":
-      fetch("/api/posts", {
-        headers: Auth.headers(user)
-      })
-        .then(res => res.ok ? res.json() : [])
-        .then(posts => apply(model => ({ ...model, posts })));
+    case "profile/select": {
+      const { userid } = message[1];
+      API.fetchProfile(userid, user)
+        .then((profile) => apply((m) => ({ ...m, profile })))
+        .catch((err) => console.warn("Profile load failed:", err));
       break;
+    }
 
-    case "locations/load":
-      fetch("/api/locations", {
-        headers: Auth.headers(user)
-      })
-        .then(res => res.ok ? res.json() : [])
-        .then(locations => apply(model => ({ ...model, locations })));
+    case "profile/save": {
+      const { userid, profile, onSuccess, onFailure } = message[1];
+      API.saveProfile(userid, profile, user)
+        .then((updated) => {
+          apply((m) => ({ ...m, profile: updated }));
+          onSuccess?.();
+        })
+        .catch((err) => {
+          onFailure?.(err);
+        });
       break;
+    }
 
-    case "profile/save":
-      saveProfile(msg[1], user)
-        .then(profile => apply(model => ({ ...model, profile })))
-        .then(() => msg[1].onSuccess?.())
-        .catch(err => msg[1].onFailure?.(err));
+    case "posts/load": {
+      API.fetchPosts(user).then((posts) => apply((m) => ({ ...m, posts })));
       break;
+    }
+
+    case "locations/load": {
+      API.fetchLocations(user).then((locations) =>
+        apply((m) => ({ ...m, locations }))
+      );
+      break;
+    }
 
     default:
-      const unhandled: never = msg[0];
-      throw new Error(`Unhandled message: ${unhandled}`);
+      console.warn("Unhandled message:", message[0]);
   }
-}
-
-function saveProfile(
-  msg: {
-    userid: string;
-    profile: User;
-  },
-  user: Auth.User
-): Promise<User> {
-  return fetch(`/api/users/${msg.userid}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      ...Auth.headers(user)
-    },
-    body: JSON.stringify(msg.profile)
-  }).then(res => {
-    if (res.status === 200) return res.json();
-    throw new Error(`Failed to save profile for ${msg.userid}`);
-  });
 }

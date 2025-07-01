@@ -16,7 +16,7 @@ export class PostsViewElement extends LitElement {
   static styles = css`
     :host {
       display: block;
-      padding: 2rem;
+      padding: 1rem;
     }
     .container-post {
       display: flex;
@@ -24,7 +24,15 @@ export class PostsViewElement extends LitElement {
       flex-direction: column;
       align-items: center;
     }
-    .header {margin: 0;}
+    .header {
+      margin: 0;
+    }
+    .login-message {
+      text-align: center;
+      color: var(--color-text);
+      font-size: 16px;
+      padding: 2rem;
+    }
   `;
 
   connectedCallback() {
@@ -70,14 +78,15 @@ export class PostsViewElement extends LitElement {
 
   render() {
     return html`
-      <div class="container-post">
-        <h2 class = "header" >All Posts</h2>
-        <feed-posts 
-          .posts=${this.posts}
-          .locations=${this.locations}
-        ></feed-posts>
-      </div>
+      ${!this.token
+        ? html`<div class="login-message">Please log in to see posts.</div>`
+        : html`<div class="container-post">
+            <h2 class="header">All Posts</h2>
+            <feed-posts
+              .posts=${this.posts}
+              .locations=${this.locations}
+            ></feed-posts>
+          </div>`}
     `;
   }
-
 }

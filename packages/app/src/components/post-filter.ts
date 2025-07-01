@@ -14,7 +14,7 @@ export class PostFilter extends LitElement {
     width: 100%;
     padding: 16px;
     box-sizing: border-box;
-    color: var(--color-text-default);
+    color: var(--color-text);
     background-color: var(--color-background-page);
     font-family: var(--font-family-base);
   }
@@ -38,13 +38,13 @@ export class PostFilter extends LitElement {
     font-size: 16px;
     font-weight: var(--font-weight-bold);
     background: transparent;
-    color: var(--color-text-default);
+    color: var(--color-text);
     outline: none;
     font-family: var(--font-family-base);
   }
 
   input[type="text"]::placeholder {
-    color: var(--color-text-default);
+    color: var(--color-text);
     opacity: 0.5;
   }
 
@@ -55,7 +55,7 @@ export class PostFilter extends LitElement {
     padding: 6px 10px;
     border-radius: 20px;
     font-weight: var(--font-weight-bold);
-    color: var(--color-text-header);
+    color: var(--color-text);
     outline: none;
     cursor: pointer;
   }
@@ -69,7 +69,7 @@ export class PostFilter extends LitElement {
     width: 20px;
     height: 20px;
     flex-shrink: 0;
-    stroke: var(--color-text-default);
+    stroke: var(--color-text);
   }
 
   .applied-filter {
@@ -81,8 +81,8 @@ export class PostFilter extends LitElement {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: var(--color-text-default);
-    color: var(--color-text-bright);
+    background: var(--color-text);
+    color: var(--color-text);
     font-family: var(--font-family-base);
     font-size: 14px;
     font-weight: var(--font-weight-bold);
@@ -94,7 +94,7 @@ export class PostFilter extends LitElement {
     cursor: pointer;
     font-size: 12px;
     background: var(--color-background-page);
-    color: var(--color-text-default);
+    color: var(--color-text);
     border: none;
     border-radius: 50%;
     width: 20px;

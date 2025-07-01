@@ -24,7 +24,7 @@ export class FeedPosts extends LitElement {
     width: 100%;
     font-family: var(--font-family-base);
     min-height: 100vh;
-    color: var(--color-text-default);
+    color: var(--color-text);
     background-color: var(--color-background-page);
   }
 
@@ -63,7 +63,7 @@ export class FeedPosts extends LitElement {
   }
 
   .username {
-    color: var(--color-text-header);
+    color: var(--color-text);
     font-size: 14px;
     font-weight: var(--font-weight-bold);
     margin: 0;
@@ -78,11 +78,11 @@ export class FeedPosts extends LitElement {
   .location-icon {
     width: 12px;
     height: 12px;
-    fill: var(--color-text-default);
+    fill: var(--color-text);
   }
 
   .location-text {
-    color: var(--color-text-default);
+    color: var(--color-text);
     font-size: 12px;
     font-weight: var(--font-weight-normal);
   }
@@ -91,7 +91,7 @@ export class FeedPosts extends LitElement {
     width: 20px;
     height: 20px;
     cursor: pointer;
-    fill: var(--color-text-default);
+    fill: var(--color-text);
   }
 
   .post-body {
@@ -102,11 +102,11 @@ export class FeedPosts extends LitElement {
     font-size: 14px;
     line-height: 1.4;
     margin-bottom: 12px;
-    color: var(--color-text-default);
+    color: var(--color-text);
   }
 
   .caption .text {
-    color: var(--color-text-default);
+    color: var(--color-text);
   }
 
   .caption .hashtag {
@@ -146,11 +146,11 @@ export class FeedPosts extends LitElement {
   .interaction-icon {
     width: 18px;
     height: 18px;
-    fill: var(--color-text-default);
+    fill: var(--color-text);
   }
 
   .interaction-count {
-    color: var(--color-text-default);
+    color: var(--color-text);
     font-size: 13px;
     font-weight: 500;
     font-family: system-ui, sans-serif;
@@ -159,7 +159,7 @@ export class FeedPosts extends LitElement {
   .no-results {
     text-align: center;
     padding: 40px 20px;
-    color: var(--color-text-default);
+    color: var(--color-text);
     font-size: 16px;
   }
 `;

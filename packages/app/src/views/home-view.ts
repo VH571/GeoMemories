@@ -1,6 +1,6 @@
 import { LitElement, html, css } from "lit";
 import { customElement } from "lit/decorators.js";
-
+import { Events } from "@calpoly/mustang";
 @customElement("home-view")
 export class HomeViewElement extends LitElement {
   static styles = css`
@@ -9,7 +9,7 @@ export class HomeViewElement extends LitElement {
       padding: 2rem;
       text-align: center;
       background-color: var(--color-background-page);
-      color: var(--color-text-default);
+      color: var(--color-text);
       font-family: var(--font-family-base);
     }
 
@@ -38,7 +38,7 @@ export class HomeViewElement extends LitElement {
       padding: 0.75rem 1.5rem;
       border-radius: 8px;
       background-color: var(--color-accent);
-      color: var(--color-text-bright);
+      color: var(--color-text);
       font-weight: var(--font-weight-bold);
       text-decoration: none;
       transition: background 0.2s ease;
@@ -56,7 +56,6 @@ export class HomeViewElement extends LitElement {
         Capture, share, and relive your adventures. Post memories, attach
         locations, and explore your map of experiences.
       </p>
-
       <div class="button-row">
         <a href="/app/posts" class="button">View Posts</a>
         <a href="/app/new" class="button">Create a Memory</a>

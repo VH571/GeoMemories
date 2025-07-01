@@ -1,9 +1,65 @@
-import { html, css, LitElement } from "lit";
+import { html, css } from "lit";
 import { customElement } from "lit/decorators.js";
+import { View } from "@calpoly/mustang";
+import { Model } from "../model"; // adjust import to your actual paths
+import { Msg } from "../messages";
 import "../components/login-form";
 
 @customElement("login-view")
-export class LoginViewElement extends LitElement {
+export class LoginViewElement extends View<Model, Msg> {
+  constructor() {
+    super("geomem:model");
+  }
+  render() {
+    return html`
+      <div class="container">
+        <h1 class="title">Login</h1>
+        <p class="subtitle">Good to see you again! Let's explore.</p>
+
+        <login-form
+          api="/auth"
+          redirect="/app"
+          @login-success=${this.handleLoginSuccess}
+        >
+          <div class="form-group">
+            <input
+              name="username"
+              type="text"
+              class="form-input"
+              placeholder="Enter your username"
+            />
+          </div>
+
+          <div class="form-group">
+            <input
+              name="password"
+              type="password"
+              class="form-input"
+              placeholder="Enter your password"
+            />
+          </div>
+        </login-form>
+
+        <div class="signup-link">
+          <span>Don't have account? Let's</span>
+          <a href="/register">Sign up</a>
+        </div>
+      </div>
+    `;
+  }
+
+  async handleLoginSuccess(event: CustomEvent) {
+    const { token, profile } = event.detail;
+    console.log("this is the profile in the login view: ", profile);
+    this.dispatchMessage([
+      "cert/success",
+      {
+        token,
+        user: profile,
+      },
+    ]);
+  }
+  
   static styles = css`
     :host {
       display: flex;
@@ -82,38 +138,4 @@ export class LoginViewElement extends LitElement {
       margin-left: 4px;
     }
   `;
-
-  render() {
-    return html`
-      <div class="container">
-        <h1 class="title">Login</h1>
-        <p class="subtitle">Good to see you again! Let's explore.</p>
-
-        <login-form api="/auth" redirect="/app">
-          <div class="form-group">
-            <input
-              name="username"
-              type="text"
-              class="form-input"
-              placeholder="Enter your username"
-            />
-          </div>
-
-          <div class="form-group">
-            <input
-              name="password"
-              type="password"
-              class="form-input"
-              placeholder="Enter your password"
-            />
-          </div>
-        </login-form>
-
-        <div class="signup-link">
-          <span>Don't have account? Let's</span>
-          <a href="/register">Sign up</a>
-        </div>
-      </div>
-    `;
-  }
 }

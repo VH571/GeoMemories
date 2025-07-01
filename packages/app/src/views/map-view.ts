@@ -1,4 +1,5 @@
-import { LitElement, html } from "lit";
+import { css } from "@calpoly/mustang";
+import { CSSResultGroup, LitElement, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { Post, Location } from "server/models";
 import { Observer } from "@calpoly/mustang";
@@ -12,6 +13,16 @@ export class MapViewElement extends LitElement {
   @state() locations: Location[] = [];
   @state() token = "";
   @state() userId = "";
+
+  static styles = css`
+    .login-message {
+      text-align: center;
+      color: var(--color-text);
+      font-size: 16px;
+      padding: 2rem;
+    }
+  `;
+
   async loadPosts() {
     try {
       const res = await fetch("/api/posts", {
@@ -29,6 +40,7 @@ export class MapViewElement extends LitElement {
       console.error("Error fetching posts:", err);
     }
   }
+
   async loadLocations() {
     try {
       const res = await fetch("/api/locations", {
@@ -47,6 +59,7 @@ export class MapViewElement extends LitElement {
       console.error("Error loading locations:", error);
     }
   }
+
   connectedCallback() {
     super.connectedCallback();
     this._authObserver.observe((auth) => {
@@ -61,17 +74,20 @@ export class MapViewElement extends LitElement {
       }
     });
   }
+
   render() {
     console.log("Rendering map with posts:", this.posts);
-console.log("Rendering map with locations:", this.locations);
+    console.log("Rendering map with locations:", this.locations);
 
-    return html`
-      <mapbox-map
-        style="height: 500px;"
-        .posts=${this.posts}
-        .locations=${this.locations}
-      >
-      </mapbox-map>
-    `;
+    return html`${!this.token
+      ? html`<div class="login-message">Please log in to see map.</div>`
+      : html`
+          <mapbox-map
+            style="height: 500px;"
+            .posts=${this.posts}
+            .locations=${this.locations}
+          >
+          </mapbox-map>
+        `} `;
   }
 }

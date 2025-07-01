@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import express, { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import users from "../services/user-svc.js";
+import UserModel from "../models/user.js";
 
 dotenv.config();
 const router = express.Router();
@@ -90,5 +91,36 @@ export function authenticateUser(
     else res.status(403).end();
   });
 }
+router.get("/me", authenticateUser, async (req: Request, res: Response) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (!token) {
+    res.status(401).send("Missing token");
+    return;
+  }
+
+  try {
+    const decoded: any = jwt.verify(token, TOKEN_SECRET);
+    const username = decoded?.username;
+
+    const user = await UserModel.findOne({ username });
+    if (!user) {
+      res.status(404).send("User not found");
+      return;
+    }
+
+    res.json({
+      _id: user._id,
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      profilePicture: user.profilePicture,
+    });
+  } catch (err) {
+    res.status(403).send("Invalid token");
+  }
+});
+
 
 export default router;

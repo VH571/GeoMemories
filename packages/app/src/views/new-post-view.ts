@@ -32,7 +32,7 @@ export class NewPostViewElement extends LitElement {
       padding: 1rem;
       max-width: 400px;
       margin: 0 auto;
-      color: var(--color-text-default);
+      color: var(--color-text);
       background-color: var(--color-background-page);
       font-family: var(--font-family-base);
     }
@@ -62,7 +62,7 @@ export class NewPostViewElement extends LitElement {
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--color-text-default);
+      color: var(--color-text);
       font-size: 14px;
     }
 
@@ -85,7 +85,7 @@ export class NewPostViewElement extends LitElement {
       display: block;
       font-size: 14px;
       font-weight: var(--font-weight-bold);
-      color: var(--color-text-header);
+      color: var(--color-text);
       margin-bottom: 0.5rem;
     }
 
@@ -96,7 +96,7 @@ export class NewPostViewElement extends LitElement {
       border-radius: 8px;
       font-size: 14px;
       background: var(--color-background-input, white);
-      color: var(--color-text-default);
+      color: var(--color-text);
       box-sizing: border-box;
       transition: border-color 0.2s ease;
     }
@@ -146,18 +146,18 @@ export class NewPostViewElement extends LitElement {
     }
 
     .attachment-section:hover {
-      border-color: var(--color-text-default);
+      border-color: var(--color-text);
     }
 
     .attachment-icon {
       font-size: 24px;
       margin-bottom: 0.5rem;
-      color: var(--color-text-default);
+      color: var(--color-text);
     }
 
     .attachment-text {
       font-size: 14px;
-      color: var(--color-text-default);
+      color: var(--color-text);
       font-weight: var(--font-weight-bold);
     }
 
@@ -225,12 +225,12 @@ export class NewPostViewElement extends LitElement {
       font-size: 14px;
       font-weight: var(--font-weight-bold);
       margin-bottom: 1rem;
-      color: var(--color-text-header);
+      color: var(--color-text);
     }
 
     .login-message {
       text-align: center;
-      color: var(--color-text-default);
+      color: var(--color-text);
       font-size: 16px;
       padding: 2rem;
     }

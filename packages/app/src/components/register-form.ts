@@ -6,7 +6,7 @@ interface RegisterFormData {
   lastName?: string;
   username?: string;
   password?: string;
-  profilePicture?: string; // base64 string
+  profilePicture?: string;
 }
 
 export class RegisterFormElement extends LitElement {
@@ -75,40 +75,66 @@ export class RegisterFormElement extends LitElement {
     }
   }
 
-  handleSubmit(e: SubmitEvent) {
+  async handleSubmit(e: SubmitEvent) {
     e.preventDefault();
 
-    if (this.canSubmit && this.api) {
-      fetch(this.api, {
+    if (!this.canSubmit || !this.api) return;
+
+    try {
+      const res = await fetch(this.api, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(this.formData),
-      })
-        .then(async (res) => {
-          if (!res.ok) {
-            const { error } = await res.json();
-            throw new Error(error || "Registration failed");
-          }
-          return res.json();
-        })
-        .then((json: { token: string }) => {
-          this.dispatchEvent(
-            new CustomEvent("auth:message", {
-              bubbles: true,
-              composed: true,
-              detail: [
-                "auth/signin",
-                { token: json.token, redirect: this.redirect },
-              ],
-            })
-          );
-        })
-        .catch((err: Error) => {
-          console.error(err);
-          this.error = err.message;
-        });
+      });
+
+      if (!res.ok) {
+        const { error } = await res.json();
+        throw new Error(error || "Registration failed");
+      }
+
+      const { token } = await res.json();
+
+      // Fetch the user profile using the token
+      const profileRes = await fetch(`${this.api}/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!profileRes.ok) {
+        throw new Error("Failed to fetch user profile after registration");
+      }
+
+      const profile = await profileRes.json();
+
+      // Dispatch to <mu-auth>
+      const muAuth = document.querySelector("mu-auth");
+      if (muAuth) {
+        muAuth.dispatchEvent(
+          new CustomEvent("auth:message", {
+            bubbles: true,
+            composed: true,
+            detail: [
+              "auth/signin",
+              {
+                token: token,
+                authenticated: true,
+                username: profile.username,
+                redirect: this.redirect,
+              },
+            ],
+          })
+        );
+      }
+
+      console.log("Registration + login successful:", profile);
+      this.formData = {};
+      this.error = undefined;
+    } catch (err: any) {
+      console.error(err);
+      this.error = err.message;
     }
   }
 }
